@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+import {io} from "socket.io-client"
+import Axios from "axios"
+const socket = io("http://localhost:80")
+
 
 function App() {
+
+  useEffect(() => {
+    /*
+    Axios.get("http://localhost:80/").then((response) => {
+      console.log(response.data)
+    })*/
+    socket.on("RECEIVE_TEST", data => {
+      console.log(data)
+    })
+    socket.on("RECEIVE", data => {
+      console.log(data)
+    })
+  },[])
+
+  const sendRoomMessage = () => {
+    socket.emit("SEND_TEST","こんにちは")
+  }
+
+  const sendMessage = () => {
+    socket.emit("getMessage","こんばんは")
+  }
+
+  const joinRoom = () => {
+    socket.emit("JOIN_ROOM")
+  }
+
+  const leaveRoom = () => {
+    socket.emit("LEAVE_ROOM")
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={sendRoomMessage}>メッセージを送る</button>
+      <button onClick={sendMessage}>メッセージを送る</button>
+      <button onClick={joinRoom}>ルームに参加</button>
+      <button onClick={leaveRoom}>ルームを退出</button>
     </div>
   );
 }
